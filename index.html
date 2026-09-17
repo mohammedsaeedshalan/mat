@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نظام إدارة المطاعم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="login-screen" id="loginScreen">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="brand-icon large">M</div>
+          <h1>نظام إدارة المطاعم</h1>
+          <p>تسجيل الدخول إلى لوحة التحكم</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <label>
+            اسم المستخدم
+            <input type="text" name="username" placeholder="admin" required />
+          </label>
+          <label>
+            كلمة المرور
+            <input type="password" name="password" placeholder="admin123" required />
+          </label>
+          <button type="submit" class="primary-btn full-width-btn">تسجيل الدخول</button>
+        </form>
+
+        
+      </div>
+    </div>
+
+    <div class="app-shell hidden" id="appShell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon">M</div>
+          <div>
+            <h1>المطاعم</h1>
+            <small>Warehouse OS</small>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">📊</span>لوحة التحكم</button>
+          <button class="nav-btn" data-view="products"><span class="nav-icon">📦</span>المنتجات</button>
+          <button class="nav-btn" data-view="inventory"><span class="nav-icon">📦</span>حركة المخزون</button>
+          <button class="nav-btn" data-view="sales"><span class="nav-icon">🧾</span>المبيعات</button>
+          <button class="nav-btn" data-view="reports"><span class="nav-icon">📈</span>التقارير</button>
+          <button class="nav-btn" data-view="customers"><span class="nav-icon">👥</span>العملاء</button>
+          <button class="nav-btn" data-view="suppliers"><span class="nav-icon">🚚</span>الموردين</button>
+          <button class="nav-btn" data-view="expenses"><span class="nav-icon">💸</span>المصروفات</button>
+          <button class="nav-btn" data-view="employees"><span class="nav-icon">🧑‍🍳</span>العاملين والرواتب</button>
+          <button class="nav-btn" data-view="users"><span class="nav-icon">👤</span>المستخدمين</button>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">تسجيل الخروج</button>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">إدارة المخزون</p>
+            <h2>نظام متكامل</h2>
+          </div>
+          <div class="topbar-meta">
+            <span class="user-badge" id="currentUserBadge">مدير النظام</span>
+            <span class="status-pill" id="statusMessage">جاهز</span>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboardView">
+          <div class="dashboard-hero">
+            <div>
+              <p class="hero-kicker">ملخص التشغيل</p>
+              <h3>لوحة إدارة المخزون</h3>
+            </div>
+            <div class="hero-actions">
+              <span class="hero-pill success">+12% هذا الشهر</span>
+              <span class="hero-pill">نشط الآن</span>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card success">
+              <div class="stat-icon">📦</div>
+              <span>إجمالي المنتجات</span>
+              <strong id="totalProductsValue">0</strong>
+            </article>
+            <article class="stat-card primary">
+              <div class="stat-icon">💰</div>
+              <span>قيمة المخزون</span>
+              <strong id="inventoryValue">0 ر.س</strong>
+            </article>
+            <article class="stat-card warning">
+              <div class="stat-icon">⚠️</div>
+              <span>منتجات قليلة الكمية</span>
+              <strong id="lowStockValue">0</strong>
+            </article>
+          </div>
+
+          <div class="content-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>تنبيهات المخزون</h3>
+              </div>
+              <ul class="alert-list" id="lowStockList"></ul>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>إحصائيات سريعة</h3>
+              </div>
+              <div class="mini-metrics">
+                <div>
+                  <div class="metric-icon" aria-hidden="true">🛒</div>
+                  <label>منتجات قابلة للبيع</label>
+                  <strong id="saleReadyCount">0</strong>
+                </div>
+                <div>
+                  <div class="metric-icon" aria-hidden="true">🧾</div>
+                  <label>إجمالي المشتريات</label>
+                  <strong id="purchaseValue">0 ر.س</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="productsView">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إضافة وتعديل المنتج</h3>
+            </div>
+
+            <form id="productForm" class="form-grid">
+              <label>
+                اسم المنتج
+                <input type="text" name="name" placeholder="مثل: زيت زيتون" required />
+              </label>
+              <label>
+                كود المنتج (SKU)
+                <input type="text" name="sku" placeholder="SKU-1001" required />
+              </label>
+              <label>
+                التصنيف
+                <select name="category" id="categorySelect" required></select>
+              </label>
+              <label>
+                إضافة تصنيف جديد
+                <input type="text" id="newCategoryInput" placeholder="مثل: حلويات" />
+              </label>
+              <div class="form-actions full-width category-action-row">
+                <button type="button" class="secondary-btn" id="addCategoryBtn">إضافة تصنيف</button>
+              </div>
+              <label>
+                سعر الشراء
+                <input type="number" name="purchasePrice" min="0" step="0.01" required />
+              </label>
+              <label>
+                سعر البيع
+                <input type="number" name="salePrice" min="0" step="0.01" required />
+              </label>
+              <label>
+                الكمية الحالية
+                <input type="number" name="currentQuantity" min="0" step="1" required />
+              </label>
+              <label>
+                الحد الأدنى للمخزون
+                <input type="number" name="minStockLevel" min="0" step="1" required />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">حفظ المنتج</button>
+                <button type="button" class="secondary-btn" id="resetProductFormBtn">إعادة تعيين</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>التصنيفات</h3>
+            </div>
+            <div class="category-list" id="categoryList"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>قائمة المنتجات</h3>
+              <div class="search-box">
+                <input type="search" id="productSearch" placeholder="بحث عن منتج" />
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>SKU</th>
+                    <th>الفئة</th>
+                    <th>شراء</th>
+                    <th>بيع</th>
+                    <th>الكمية</th>
+                    <th>الحد الأدنى</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="inventoryView">
+          <div class="movement-hero">
+            <div>
+              <span class="movement-eyebrow">مركز العمليات</span>
+              <h3>نبض المخزون</h3>
+              <p>راقب تدفق المنتجات وسجّل حركاتك اليومية من مكان واحد.</p>
+            </div>
+            <div class="movement-live-indicator"><i></i> مباشر الآن</div>
+          </div>
+
+          <div class="movement-stats-grid">
+            <article class="movement-stat-card blue">
+              <div class="movement-stat-icon">↗</div>
+              <span>إجمالي الإضافات</span>
+              <strong id="movementInTotal">0</strong>
+              <small>وحدة إلى المخزون</small>
+            </article>
+            <article class="movement-stat-card coral">
+              <div class="movement-stat-icon">↘</div>
+              <span>إجمالي الصرف</span>
+              <strong id="movementOutTotal">0</strong>
+              <small>وحدة من المخزون</small>
+            </article>
+            <article class="movement-stat-card dark">
+              <div class="movement-stat-icon">◷</div>
+              <span>عدد العمليات</span>
+              <strong id="movementCountTotal">0</strong>
+              <small>حركة مسجلة</small>
+            </article>
+            <article class="movement-stat-card green">
+              <div class="movement-stat-icon">◉</div>
+              <span>صافي الحركة</span>
+              <strong id="movementNetTotal">0</strong>
+              <small>إضافة ناقص صرف</small>
+            </article>
+          </div>
+
+          <div class="movement-dashboard-grid">
+            <div class="panel movement-chart-panel">
+              <div class="panel-header">
+                <div>
+                  <span class="movement-kicker">تحليل سريع</span>
+                  <h3>اتجاه حركة المخزون</h3>
+                </div>
+                <span class="movement-period">كل العمليات</span>
+              </div>
+              <div class="movement-chart" id="movementChart"></div>
+              <div class="movement-chart-legend">
+                <span><i class="legend-dot in"></i>إضافة</span>
+                <span><i class="legend-dot out"></i>صرف</span>
+              </div>
+            </div>
+
+            <div class="panel movement-form-panel">
+              <div class="panel-header">
+                <div>
+                  <span class="movement-kicker">عملية جديدة</span>
+                  <h3>تسجيل حركة</h3>
+                </div>
+                <span class="movement-form-icon">＋</span>
+              </div>
+              <form id="stockForm" class="form-grid compact-grid">
+                <label>
+                  المنتج
+                  <select name="productId" id="stockProductSelect" required></select>
+                </label>
+                <label>
+                  نوع الحركة
+                  <select name="type" required>
+                    <option value="in">إضافة مخزون</option>
+                    <option value="out">صرف مخزون</option>
+                  </select>
+                </label>
+                <label>
+                  الكمية
+                  <input type="number" name="quantity" min="1" step="1" required />
+                </label>
+                <label>
+                  سعر الوحدة
+                  <input type="number" name="unitCost" min="0" step="0.01" required />
+                </label>
+                <label class="full-width">
+                  ملاحظات
+                  <input type="text" name="notes" placeholder="ملاحظات الحركة" />
+                </label>
+                <div class="form-actions full-width">
+                  <button type="submit" class="primary-btn movement-submit-btn">حفظ الحركة</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="panel movement-history-panel">
+            <div class="panel-header with-tools">
+              <div>
+                <span class="movement-kicker">التدفق الأخير</span>
+                <h3>آخر حركات المخزون</h3>
+              </div>
+              <span class="movement-record-count" id="movementRecordCount">0 سجل</span>
+            </div>
+            <div class="movement-activity-list" id="movementActivityList"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>النوع</th>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>السعر</th>
+                    <th>التاريخ</th>
+                    <th>ملاحظات</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="salesView">
+          <div class="panel">
+            <div class="panel-header sales-header">
+              <div>
+                <span class="sales-eyebrow">نقطة البيع</span>
+                <h3>إنشاء عملية بيع</h3>
+              </div>
+              <div class="sales-header-badge">اضغط على المنتج لإضافته</div>
+            </div>
+
+            <div class="sale-form">
+              <div class="sales-top-grid">
+                <div class="sales-card">
+                  <label>
+                    اختيار العميل
+                    <input type="text" id="customerSalesSearch" placeholder="ابحث باسم العميل أو الشركة" />
+                  </label>
+                  <div id="customerSelectionWrapper" class="customer-selection-wrapper hidden">
+                    <label>
+                      العميل
+                      <select id="customerSelect"></select>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="sales-card sales-card-compact">
+                  <label>
+                    نوع الدفع
+                    <select id="paymentTypeSelect">
+                      <option value="cash">نقدي</option>
+                      <option value="credit">آجل</option>
+                    </select>
+                  </label>
+                  <div class="quick-summary">
+                    <span>إجمالي الطلبات</span>
+                    <strong id="saleTotalValue">0 ر.س</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sales-workspace">
+                <div class="sales-products-panel">
+                  <div class="sales-section-heading">
+                    <div>
+                      <span class="sales-eyebrow">كتالوج المنتجات</span>
+                      <h4>اختر المنتجات</h4>
+                    </div>
+                    <span class="sales-hint">إضافة سريعة بنقرة واحدة</span>
+                  </div>
+                  <div class="sale-product-grid" id="saleProductGrid"></div>
+                </div>
+
+                <aside class="sales-cart-panel">
+                  <div class="sales-section-heading">
+                    <div>
+                      <span class="sales-eyebrow">ملخص الطلب</span>
+                      <h4>السلة الحالية</h4>
+                    </div>
+                    <span class="cart-count" id="saleItemCount">0</span>
+                  </div>
+                  <div class="sale-items" id="saleItemsContainer"></div>
+                  <div class="sales-cart-footer">
+                    <span>الإجمالي</span>
+                    <strong id="saleCartTotal">0 ر.س</strong>
+                  </div>
+                  <button type="button" id="saveSaleBtn" class="primary-btn sales-save-btn">حفظ البيع</button>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="reportsView">
+          <div class="panel">
+            <div class="panel-header report-header">
+              <div>
+                <span class="report-eyebrow">مركز التحليل</span>
+                <h3>التقارير</h3>
+                <p id="reportPeriodLabel">كل الفترات</p>
+              </div>
+              <div class="report-actions">
+                <button type="button" class="secondary-btn" id="printReportsBtn">طباعة التقرير</button>
+              </div>
+            </div>
+            <div class="report-filters">
+              <label>
+                نوع التقويم
+                <select id="reportCalendarType">
+                  <option value="gregorian">ميلادي</option>
+                  <option value="hijri">هجري</option>
+                </select>
+              </label>
+              <label>
+                من تاريخ
+                <input type="date" id="reportDateFrom" data-report-date-input />
+              </label>
+              <label>
+                إلى تاريخ
+                <input type="date" id="reportDateTo" data-report-date-input />
+              </label>
+              <button type="button" class="secondary-btn" id="resetReportDatesBtn">كل التواريخ</button>
+            </div>
+
+            <div class="report-summary-grid">
+              <article class="stat-card primary">
+                <div class="stat-icon">💰</div>
+                <span>إجمالي المبيعات</span>
+                <strong id="reportSalesTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card success">
+                <div class="stat-icon">💵</div>
+                <span>مبيعات نقدية</span>
+                <strong id="reportCashTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card warning">
+                <div class="stat-icon">🧾</div>
+                <span>مبيعات آجل</span>
+                <strong id="reportCreditTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card primary">
+                <div class="stat-icon">📥</div>
+                <span>إجمالي الدفعات</span>
+                <strong id="reportReceiptsTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card warning">
+                <div class="stat-icon">⏳</div>
+                <span>ذمم مستحقة</span>
+                <strong id="reportOutstandingTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card success">
+                <div class="stat-icon">👥</div>
+                <span>إجمالي الرواتب</span>
+                <strong id="reportPayrollTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card warning">
+                <div class="stat-icon">💸</div>
+                <span>إجمالي المصروفات</span>
+                <strong id="reportExpensesTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card warning">
+                <div class="stat-icon">🛒</div>
+                <span>تكلفة المنتجات المباعة</span>
+                <strong id="reportProductCostTotal">0 ر.س</strong>
+              </article>
+              <article class="stat-card success net-profit-card">
+                <div class="stat-icon">📈</div>
+                <span>صافي الربح</span>
+                <strong id="reportNetProfitTotal">0 ر.س</strong>
+              </article>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>تقرير المبيعات</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم البيع</th>
+                    <th>العميل</th>
+                    <th>نوع الدفع</th>
+                    <th>الإجمالي</th>
+                    <th>المدفوع</th>
+                    <th>المتبقي</th>
+                    <th>التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody id="salesReportTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>تقرير دفعات العملاء</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم الدفعة</th>
+                    <th>العميل</th>
+                    <th>المبلغ</th>
+                    <th>طريقة الدفع</th>
+                    <th>ملاحظات</th>
+                    <th>التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentsReportTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>تقرير رواتب العاملين</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم الدفعة</th>
+                    <th>العامل</th>
+                    <th>الشهر</th>
+                    <th>المبلغ</th>
+                    <th>ملاحظات</th>
+                    <th>تاريخ التسجيل</th>
+                  </tr>
+                </thead>
+                <tbody id="payrollReportTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="customersView">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إدارة العملاء</h3>
+            </div>
+            <form id="customerForm" class="form-grid">
+              <label>
+                اسم العميل
+                <input type="text" name="name" placeholder="اسم العميل" required />
+              </label>
+              <label>
+                رقم الهاتف
+                <input type="text" name="phone" placeholder="0500000000" required />
+              </label>
+              <label>
+                الشركة
+                <input type="text" name="company" placeholder="اسم الشركة" required />
+              </label>
+              <label>
+                المدينة
+                <input type="text" name="city" placeholder="المدينة" required />
+              </label>
+              <label>
+                الحد الائتماني
+                <input type="number" name="creditLimit" min="0" step="0.01" value="0" />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">حفظ العميل</button>
+                <button type="button" class="secondary-btn" id="resetCustomerFormBtn">إعادة تعيين</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>قائمة العملاء</h3>
+              <div class="search-box">
+                <input type="search" id="customerSearch" placeholder="بحث بالاسم أو الهاتف أو الشركة" />
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>الهاتف</th>
+                    <th>الشركة</th>
+                    <th>المدينة</th>
+                    <th>الحد الائتماني</th>
+                    <th>إجمالي المشتريات</th>
+                    <th>إجمالي الدفعات</th>
+                    <th>المتبقي</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>كشف حساب العملاء</h3>
+              <div class="customer-statement-tools">
+                <input type="search" id="customerBalanceSearch" placeholder="بحث في كشف الحساب" />
+                <select id="customerBalanceFilter" aria-label="فلترة حالة الحساب">
+                  <option value="all">كل الحسابات</option>
+                  <option value="outstanding">عليهم مستحقات</option>
+                  <option value="settled">مسدد</option>
+                </select>
+                <strong id="customerBalanceTotal">المستحق: 0 ر.س</strong>
+              </div>
+            </div>
+            <div id="customerBalanceList" class="customer-balance-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إضافة دفعة للعميل</h3>
+            </div>
+
+            <form id="customerPaymentForm" class="form-grid">
+              <label>
+                العميل
+                <input type="search" id="customerPaymentSearch" placeholder="ابحث بالاسم أو الشركة أو الهاتف" />
+                <select id="customerPaymentCustomerSelect" required></select>
+              </label>
+              <div id="customerPaymentSummary" class="payment-customer-summary full-width"></div>
+              <label>
+                المبلغ
+                <input type="number" id="customerPaymentAmount" min="1" step="0.01" required />
+              </label>
+              <label>
+                طريقة الدفع
+                <select id="customerPaymentMethod">
+                  <option value="cash">نقد</option>
+                  <option value="bank">حوالة بنكية</option>
+                  <option value="card">بطاقة</option>
+                </select>
+              </label>
+              <label class="full-width">
+                ملاحظات
+                <input type="text" id="customerPaymentNotes" placeholder="ملاحظات الدفعة" />
+              </label>
+              <div class="form-actions full-width">
+                <button type="submit" class="primary-btn">تسجيل الدفعة</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>دفعات العملاء</h3>
+              <div class="payment-history-tools">
+                <input type="search" id="customerPaymentsSearch" placeholder="بحث في الدفعات" />
+                <strong id="customerPaymentsTotal">0 ر.س</strong>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>العميل</th>
+                    <th>المبلغ</th>
+                    <th>طريقة الدفع</th>
+                    <th>التاريخ</th>
+                    <th>ملاحظات</th>
+                  </tr>
+                </thead>
+                <tbody id="customerPaymentsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="suppliersView">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إدارة الموردين</h3>
+            </div>
+            <form id="supplierForm" class="form-grid">
+              <label>
+                اسم المورد
+                <input type="text" name="name" placeholder="اسم المورد" required />
+              </label>
+              <label>
+                رقم الهاتف
+                <input type="text" name="phone" placeholder="0550000000" required />
+              </label>
+              <label>
+                الشركة
+                <input type="text" name="company" placeholder="اسم الشركة" required />
+              </label>
+              <label>
+                المدينة
+                <input type="text" name="city" placeholder="المدينة" required />
+              </label>
+              <label>
+                الرصيد الحالي
+                <input type="number" name="balance" min="0" step="0.01" value="0" />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">حفظ المورد</button>
+                <button type="button" class="secondary-btn" id="resetSupplierFormBtn">إعادة تعيين</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>قائمة الموردين</h3>
+              <div class="search-box">
+                <input type="search" id="supplierSearch" placeholder="بحث عن مورد" />
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>الهاتف</th>
+                    <th>الشركة</th>
+                    <th>المدينة</th>
+                    <th>الرصيد</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="suppliersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="expensesView">
+          <div class="expense-hero">
+            <div>
+              <span class="expense-eyebrow">المتابعة المالية</span>
+              <h3>إدارة المصروفات</h3>
+              <p>سجل مصروفات التشغيل وتابع التدفق النقدي بوضوح.</p>
+            </div>
+            <div class="expense-hero-icon" aria-hidden="true">💸</div>
+          </div>
+
+          <div class="expense-summary-grid">
+            <article class="expense-summary-card total">
+              <span>إجمالي المصروفات</span>
+              <strong id="expensesTotalValue">0 ر.س</strong>
+              <small>كل السجلات المسجلة</small>
+            </article>
+            <article class="expense-summary-card month">
+              <span>مصروفات هذا الشهر</span>
+              <strong id="expensesMonthValue">0 ر.س</strong>
+              <small id="expensesMonthLabel">الشهر الحالي</small>
+            </article>
+            <article class="expense-summary-card count">
+              <span>عدد العمليات</span>
+              <strong id="expensesCountValue">0</strong>
+              <small>عملية مصروف</small>
+            </article>
+          </div>
+
+          <div class="expense-layout">
+            <div class="panel expense-form-panel">
+              <div class="panel-header">
+                <div>
+                  <span class="panel-kicker">عملية جديدة</span>
+                  <h3>تسجيل مصروف</h3>
+                </div>
+                <span class="expense-form-badge">مصروف تشغيلي</span>
+              </div>
+              <form id="expenseForm" class="form-grid">
+                <label>
+                  بيان المصروف
+                  <input type="text" id="expenseTitle" placeholder="مثل: فاتورة كهرباء" required />
+                </label>
+                <label>
+                  التصنيف
+                  <select id="expenseCategory" required>
+                    <option value="">اختر التصنيف</option>
+                    <option value="تشغيل">تشغيل</option>
+                    <option value="رواتب">رواتب</option>
+                    <option value="إيجار">إيجار</option>
+                    <option value="مرافق">مرافق</option>
+                    <option value="نقل">نقل</option>
+                    <option value="صيانة">صيانة</option>
+                    <option value="تسويق">تسويق</option>
+                    <option value="أخرى">أخرى</option>
+                  </select>
+                </label>
+                <label>
+                  المبلغ
+                  <div class="input-with-suffix">
+                    <input type="number" id="expenseAmount" min="0.01" step="0.01" placeholder="0.00" required />
+                    <span>ر.س</span>
+                  </div>
+                </label>
+                <label>
+                  تاريخ المصروف
+                  <input type="date" id="expenseDate" required />
+                </label>
+                <label>
+                  طريقة الدفع
+                  <select id="expensePaymentMethod" required>
+                    <option value="cash">نقدي</option>
+                    <option value="bank">تحويل بنكي</option>
+                    <option value="card">بطاقة</option>
+                  </select>
+                </label>
+                <label class="full-width">
+                  ملاحظات إضافية
+                  <input type="text" id="expenseNotes" placeholder="أضف تفاصيل تساعدك في المراجعة" />
+                </label>
+                <div class="form-actions full-width">
+                  <button type="submit" class="primary-btn">حفظ المصروف</button>
+                  <button type="reset" class="secondary-btn">مسح الحقول</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="panel expense-guide-panel">
+              <div class="panel-header">
+                <h3>ملخص التصنيفات</h3>
+              </div>
+              <div id="expenseCategorySummary" class="expense-category-summary"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <div>
+                <span class="panel-kicker">السجل المالي</span>
+                <h3>سجل المصروفات</h3>
+              </div>
+              <div class="expense-history-tools">
+                <input type="search" id="expenseSearch" placeholder="بحث في المصروفات" />
+                <select id="expenseCategoryFilter" aria-label="فلترة المصروفات حسب التصنيف">
+                  <option value="all">كل التصنيفات</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>البيان</th>
+                    <th>التصنيف</th>
+                    <th>المبلغ</th>
+                    <th>طريقة الدفع</th>
+                    <th>التاريخ</th>
+                    <th>ملاحظات</th>
+                    <th>إجراء</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="employeesView">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إضافة وتعديل العامل</h3>
+            </div>
+            <form id="employeeForm" class="form-grid">
+              <label>
+                اسم العامل
+                <input type="text" name="name" placeholder="اسم العامل" required />
+              </label>
+              <label>
+                رقم الإقامة
+                <input type="text" name="residencyNumber" placeholder="رقم الإقامة" required />
+              </label>
+              <label>
+                الجوال
+                <input type="tel" name="phone" placeholder="05xxxxxxxx" required />
+              </label>
+              <label>
+                الجنسية
+                <input type="text" name="nationality" placeholder="الجنسية" required />
+              </label>
+              <label>
+                الراتب الشهري
+                <input type="number" name="salary" min="0" step="0.01" placeholder="0.00" required />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">حفظ العامل</button>
+                <button type="button" class="secondary-btn" id="resetEmployeeFormBtn">إعادة تعيين</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>قائمة العاملين</h3>
+              <div class="search-box">
+                <input type="search" id="employeeSearch" placeholder="بحث باسم العامل أو الإقامة أو الجنسية" />
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>العامل</th>
+                    <th>رقم الإقامة</th>
+                    <th>الجوال</th>
+                    <th>الجنسية</th>
+                    <th>الراتب الشهري</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="employeesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>تسجيل دفعة راتب شهرية</h3>
+            </div>
+            <form id="payrollForm" class="form-grid">
+              <label>
+                العامل
+                <select id="payrollEmployeeSelect" required></select>
+              </label>
+              <label>
+                شهر الراتب
+                <input type="month" id="payrollMonth" required />
+              </label>
+              <label>
+                مبلغ الدفعة
+                <input type="number" id="payrollAmount" min="0.01" step="0.01" required />
+              </label>
+              <label class="full-width">
+                ملاحظات
+                <input type="text" id="payrollNotes" placeholder="مثال: دفعة راتب شهر رجب" />
+              </label>
+              <div class="form-actions full-width">
+                <button type="submit" class="primary-btn">تسجيل الدفعة</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="view" id="usersView">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>إدارة المستخدمين</h3>
+            </div>
+            <form id="userForm" class="form-grid">
+              <label>
+                اسم المستخدم
+                <input type="text" name="username" placeholder="username" required />
+              </label>
+              <label>
+                الاسم الكامل
+                <input type="text" name="fullName" placeholder="الاسم الكامل" required />
+              </label>
+              <label>
+                كلمة المرور
+                <input type="password" name="password" placeholder="********" required />
+              </label>
+              <label>
+                الدور
+                <select name="role">
+                  <option value="admin">مدير</option>
+                  <option value="sales">مبيعات</option>
+                  <option value="inventory">مخزون</option>
+                </select>
+              </label>
+              <label>
+                الحالة
+                <select name="status">
+                  <option value="active">نشط</option>
+                  <option value="inactive">غير نشط</option>
+                </select>
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">حفظ المستخدم</button>
+                <button type="button" class="secondary-btn" id="resetUserFormBtn">إعادة تعيين</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header with-tools">
+              <h3>قائمة المستخدمين</h3>
+              <div class="search-box">
+                <input type="search" id="userSearch" placeholder="بحث عن مستخدم" />
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم الكامل</th>
+                    <th>اسم المستخدم</th>
+                    <th>الدور</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
